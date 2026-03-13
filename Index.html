@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RSP SUPREME | CMS Minimal Admin</title>
+    <title>RSP SUPREME | Professional Admin Panel</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
@@ -11,246 +11,193 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        :root { 
-            --primary: #334155; /* Slate 700 */
-            --bg-main: #f8fafc;
-            --sidebar-text: #64748b;
-        }
-        body { font-family: 'Prompt', sans-serif; background-color: var(--bg-main); color: #1e293b; overflow-x: hidden; }
-        
-        /* Sidebar Clean Style */
-        .sidebar { background: white; border-right: 1px solid #e2e8f0; }
-        .nav-link { 
-            display: flex; align-items: center; gap: 12px; padding: 12px 20px; 
-            margin: 4px 16px; border-radius: 12px; color: var(--sidebar-text); 
-            font-weight: 500; transition: 0.2s; cursor: pointer;
-        }
-        .nav-link i { color: #94a3b8; transition: 0.2s; }
+        :root { --primary: #0061ff; --secondary: #60a5fa; --dark: #0f172a; --light-bg: #f8fafc; }
+        body { font-family: 'Prompt', sans-serif; background-color: var(--light-bg); color: var(--dark); overflow-x: hidden; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .sidebar { transition: all 0.3s; background: white; border-right: 1px solid #e2e8f0; }
+        .nav-link { display: flex; align-items: center; gap: 12px; padding: 14px 20px; margin: 4px 12px; border-radius: 14px; color: #64748b; font-weight: 500; transition: 0.2s; cursor: pointer; }
         .nav-link:hover { background: #f1f5f9; color: var(--primary); }
-        .nav-link:hover i { color: var(--primary); }
-        .nav-link.active { background: #f1f5f9; color: var(--primary); font-weight: 700; }
-        .nav-link.active i { color: var(--primary); }
-
-        /* Card Minimal */
-        .glass-card { background: white; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .nav-link.active { background: var(--primary); color: white; box-shadow: 0 10px 15px -3px rgba(0, 97, 255, 0.25); }
+        .glass-card { background: white; border-radius: 24px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02); }
+        .stat-card-blue { background: linear-gradient(135deg, #0061ff 0%, #60a5fa 100%); color: white; }
         
-        /* Table Style */
-        .table-container { width: 100%; border-collapse: collapse; }
-        .table-row { border-bottom: 1px solid #f1f5f9; transition: 0.2s; }
-        .table-row:hover { background-color: #f8fafc; }
-        .table-td { padding: 16px 20px; }
-        .table-th { padding: 12px 20px; text-align: left; font-size: 11px; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.05em; font-weight: 700; border-bottom: 2px solid #f1f5f9; }
-
-        /* Buttons Adjustment */
-        .btn-action { padding: 6px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;}
-        .btn-plus { background-color: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
-        .btn-plus:hover { background-color: #16a34a; color: white; }
-        .btn-minus { background-color: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
-        .btn-minus:hover { background-color: #dc2626; color: white; }
-        .btn-gray { background-color: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+        .table-container { width: 100%; border-collapse: separate; border-spacing: 0 12px; }
+        .table-row { background: white; transition: 0.3s; }
+        .table-td { padding: 18px 20px; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; }
+        .table-td:first-child { border-left: 1px solid #f1f5f9; border-top-left-radius: 18px; border-bottom-left-radius: 18px; }
+        .table-td:last-child { border-right: 1px solid #f1f5f9; border-top-right-radius: 18px; border-bottom-right-radius: 18px; }
         
-        /* Blue Action Button (For View Info) */
-        .btn-blue-light { background-color: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
-        .btn-blue-light:hover { background-color: #2563eb; color: white; }
+        .btn-grad { background: linear-gradient(135deg, #0061ff 0%, #60a5fa 100%); color: white; transition: 0.3s; }
+        .btn-grad:hover { opacity: 0.9; transform: translateY(-1px); }
 
-        .fade-in { animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        
         .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        .tab-content.active { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        #login-screen { position: fixed; inset: 0; z-index: 9999; background: var(--bg-main); display: flex; align-items: center; justify-content: center; }
+        #login-screen { position: fixed; inset: 0; z-index: 9999; background: #0f172a; display: flex; align-items: center; justify-content: center; padding: 20px; }
     </style>
 </head>
-<body>
+<body class="min-h-screen lg:flex">
 
     <div id="login-screen">
-        <div class="glass-card w-full max-w-sm p-8 fade-in">
+        <div class="bg-white w-full max-w-md rounded-[32px] p-10 shadow-2xl">
             <div class="text-center mb-8">
-                <div class="w-16 h-16 bg-slate-50 text-slate-400 border border-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl"><i class="fa-solid fa-cube"></i></div>
-                <h2 class="text-2xl font-bold text-slate-800">RSP CMS</h2>
-                <p class="text-xs text-slate-400 mt-1">เข้าสู่ระบบผู้ดูแล (Minimal Admin)</p>
+                <div class="w-20 h-20 bg-blue-600 rounded-3xl flex items-center justify-center text-white mx-auto mb-5 shadow-xl shadow-blue-200">
+                    <i class="fas fa-user-shield text-3xl"></i>
+                </div>
+                <h2 class="text-2xl font-black text-slate-800">Admin Login</h2>
+                <p class="text-slate-400 text-sm">RSP Supreme Professional Panel</p>
             </div>
             <div class="space-y-4">
-                <input type="email" id="email" placeholder="อีเมล" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-slate-400">
-                <input type="password" id="password" placeholder="รหัสผ่าน" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-slate-400">
-                <button onclick="handleLogin()" class="w-full bg-slate-800 text-white font-bold py-3 rounded-xl hover:bg-slate-700 transition mt-2">เข้าสู่ระบบ</button>
+                <input type="email" id="email" placeholder="Email Address" class="w-full p-4 bg-slate-50 border-none ring-1 ring-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="password" id="password" placeholder="Password" class="w-full p-4 bg-slate-50 border-none ring-1 ring-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500">
+                <button onclick="handleLogin()" class="w-full bg-blue-600 text-white font-black py-4 rounded-2xl hover:bg-blue-700 transition shadow-lg shadow-blue-200">เข้าสู่ระบบ</button>
             </div>
         </div>
     </div>
 
-    <div id="main-layout" class="hidden min-h-screen lg:flex w-full">
-        <aside class="sidebar fixed inset-y-0 left-0 z-50 w-64 transform -translate-x-full lg:translate-x-0 lg:static">
-            <div class="p-8">
-                <h1 class="text-xl font-bold tracking-tight text-slate-800"><i class="fa-solid fa-cube text-slate-400 mr-2"></i>RSP <span class="text-slate-400">CMS</span></h1>
+    <aside id="main-sidebar" class="sidebar fixed inset-y-0 left-0 z-50 w-72 transform -translate-x-full lg:translate-x-0 lg:static hidden flex flex-col">
+        <div class="p-8 flex items-center gap-4">
+            <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-xl">
+                <i class="fas fa-shield-halved text-2xl"></i>
             </div>
+            <h1 class="text-xl font-extrabold tracking-tight">RSP <span class="text-blue-600">SUPREME</span></h1>
+        </div>
+        <nav class="mt-4 flex-1">
+            <div onclick="switchTab('dash')" class="nav-link active" id="btn-dash"><i class="fa-solid fa-house-chimney-window"></i> แผงควบคุม</div>
+            <div onclick="switchTab('users')" class="nav-link" id="btn-users"><i class="fa-solid fa-users-gear"></i> จัดการสมาชิก</div>
+            <div onclick="switchTab('wit')" class="nav-link relative" id="btn-wit">
+                <i class="fa-solid fa-money-bill-transfer"></i> รายการธุรกรรม
+                <span id="badge-wit-count" class="absolute right-4 top-1/2 -translate-y-1/2 bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full hidden">0</span>
+            </div>
+            <div onclick="switchTab('setting')" class="nav-link" id="btn-setting"><i class="fa-solid fa-gears"></i> ตั้งค่าระบบ</div>
+        </nav>
+        <div class="p-6">
+            <button onclick="logout()" class="w-full flex items-center justify-center gap-2 bg-red-50 text-red-500 py-4 rounded-2xl font-bold text-sm hover:bg-red-500 hover:text-white transition-all">
+                <i class="fa-solid fa-power-off"></i> ออกจากระบบ
+            </button>
+        </div>
+    </aside>
 
-            <nav class="mt-2">
-                <div onclick="switchTab('dash')" class="nav-link active" id="btn-dash"><i class="fa-solid fa-chart-pie"></i> ภาพรวมระบบ</div>
-                <div onclick="switchTab('users')" class="nav-link" id="btn-users"><i class="fa-solid fa-user-group"></i> จัดการสมาชิก</div>
-                <div onclick="switchTab('wit')" class="nav-link relative" id="btn-wit">
-                    <i class="fa-solid fa-wallet"></i> รายการธุรกรรม
-                    <span id="badge-wit-count" class="absolute right-4 top-1/2 -translate-y-1/2 bg-orange-400 text-white text-[9px] px-1.5 py-0.5 rounded-full hidden">0</span>
+    <main id="main-content" class="flex-1 overflow-y-auto h-screen p-4 lg:p-10 hidden">
+        <header class="mb-10">
+            <h2 id="page-title" class="text-3xl font-black text-slate-800">แผงควบคุมหลัก</h2>
+            <p id="page-desc" class="text-slate-400 text-sm">ยินดีต้อนรับสู่ระบบจัดการข้อมูล RSP Supreme</p>
+        </header>
+
+        <div class="max-w-7xl mx-auto">
+            <section id="tab-dash" class="tab-content active">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                    <div class="glass-card p-8 stat-card-blue shadow-blue-200">
+                        <h3 class="text-5xl font-black mb-2" id="stat-total-users">0</h3>
+                        <p class="text-blue-100 text-xs font-bold uppercase tracking-wider">สมาชิกทั้งหมด</p>
+                    </div>
+                    <div class="glass-card p-8 bg-white">
+                        <h3 class="text-5xl font-black mb-2 text-slate-800">฿<span id="stat-total-bal">0.00</span></h3>
+                        <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">เครดิตหมุนเวียน</p>
+                    </div>
+                    <div class="glass-card p-8 bg-white border-l-8 border-l-orange-500">
+                        <h3 class="text-5xl font-black mb-2 text-orange-500" id="stat-pending-wit">0</h3>
+                        <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">รายการรอถอนเงิน</p>
+                    </div>
                 </div>
-                <div onclick="switchTab('setting')" class="nav-link" id="btn-setting"><i class="fa-solid fa-sliders"></i> ตั้งค่าระบบ</div>
-            </nav>
+            </section>
 
-            <div class="absolute bottom-8 w-full px-6">
-                <button onclick="logout()" class="w-full flex items-center justify-center gap-2 text-slate-400 hover:text-red-500 py-3 rounded-xl font-bold text-xs transition-all">
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i> ออกจากระบบ
-                </button>
-            </div>
-        </aside>
-
-        <main class="flex-1 overflow-y-auto h-screen p-6 lg:p-10">
-            
-            <header class="flex justify-between items-center mb-8">
-                <div>
-                    <h2 id="page-title" class="text-2xl font-bold text-slate-800">ภาพรวมระบบ</h2>
-                    <p id="page-desc" class="text-slate-400 text-xs mt-1">สรุปข้อมูลการใช้งานประจำวัน</p>
+            <section id="tab-users" class="tab-content">
+                <div class="glass-card p-6 mb-8">
+                    <input type="text" id="user-search" oninput="renderUserTable()" placeholder="ค้นหาชื่อหรืออีเมลลูกค้า..." class="w-full md:w-96 p-4 bg-slate-50 border-none ring-1 ring-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
-                <div id="display-date" class="text-[11px] font-bold text-slate-400 bg-white border border-slate-200 px-4 py-2 rounded-full uppercase tracking-wider">--/--/----</div>
-            </header>
+                <div class="overflow-x-auto">
+                    <table class="table-container">
+                        <thead>
+                            <tr class="text-slate-400 text-[11px] font-bold uppercase">
+                                <th class="px-6 pb-2 text-left">ข้อมูลลูกค้า</th>
+                                <th class="px-6 pb-2 text-left">ยอดเครดิต</th>
+                                <th class="px-6 pb-2 text-center">Win Rate</th>
+                                <th class="px-6 pb-2 text-center">จัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="user-table-body"></tbody>
+                    </table>
+                </div>
+            </section>
 
-            <div class="max-w-7xl mx-auto">
-
-                <section id="tab-dash" class="tab-content active fade-in">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                        <div class="glass-card p-6">
-                            <p class="text-slate-400 text-[10px] font-bold uppercase mb-1">สมาชิกทั้งหมด</p>
-                            <h3 class="text-3xl font-bold text-slate-700" id="stat-total-users">0</h3>
-                        </div>
-                        <div class="glass-card p-6">
-                            <p class="text-slate-400 text-[10px] font-bold uppercase mb-1">ยอดเงินรวมในระบบ</p>
-                            <h3 class="text-3xl font-bold text-slate-700">฿<span id="stat-total-bal">0.00</span></h3>
-                        </div>
-                        <div class="glass-card p-6 border-l-4 border-l-orange-400 bg-orange-50/30">
-                            <p class="text-slate-400 text-[10px] font-bold uppercase mb-1 text-orange-500">รออนุมัติถอน</p>
-                            <h3 class="text-3xl font-bold text-orange-500" id="stat-pending-wit">0</h3>
-                        </div>
+            <section id="tab-wit" class="tab-content">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+                    <div class="flex bg-white p-1.5 rounded-2xl shadow-sm border">
+                        <button onclick="switchWitSubTab('pending')" id="sub-pending-btn" class="px-8 py-3 rounded-xl text-xs font-bold transition-all bg-blue-600 text-white shadow-lg shadow-blue-100">รายการรออนุมัติ</button>
+                        <button onclick="switchWitSubTab('all')" id="sub-all-btn" class="px-8 py-3 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-50">ประวัติถอนทั้งหมด</button>
                     </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="table-container">
+                        <tbody id="transaction-table-body"></tbody>
+                    </table>
+                </div>
+            </section>
 
-                    <div class="glass-card overflow-hidden">
-                        <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                            <h4 class="font-bold text-sm text-slate-700">รายการรออนุมัติล่าสุด</h4>
-                            <button onclick="switchTab('wit')" class="text-[10px] font-bold text-slate-400 hover:text-slate-700">ดูทั้งหมด <i class="fa-solid fa-arrow-right"></i></button>
+            <section id="tab-setting" class="tab-content">
+                <div class="max-w-lg glass-card p-10">
+                    <h4 class="text-xl font-bold mb-6 text-slate-800">ตั้งค่าการติดต่อซัพพอร์ต</h4>
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">ลิงก์ติดต่อ (LINE / Telegram)</label>
+                            <input type="text" id="config-support-url" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-blue-500">
                         </div>
-                        <div class="overflow-x-auto">
-                            <table class="table-container">
-                                <tbody id="dash-pending-list"></tbody>
-                            </table>
-                        </div>
+                        <button onclick="saveSystemSettings()" class="w-full btn-grad py-4 rounded-2xl font-bold">บันทึกข้อมูลระบบ</button>
                     </div>
-                </section>
-
-                <section id="tab-users" class="tab-content fade-in">
-                    <div class="glass-card p-4 mb-6 flex flex-col md:flex-row gap-4 justify-between items-center">
-                        <div class="relative w-full md:w-80">
-                            <input type="text" id="user-search-input" oninput="renderUserTable()" placeholder="ค้นหาลูกค้า..." class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border-none ring-1 ring-slate-200 focus:ring-2 focus:ring-slate-400 outline-none text-sm transition">
-                            <i class="fa-solid fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-300 text-xs"></i>
-                        </div>
-                    </div>
-
-                    <div class="glass-card overflow-hidden">
-                        <table class="table-container">
-                            <thead>
-                                <tr>
-                                    <th class="table-th">ชื่อสมาชิก</th>
-                                    <th class="table-th">เครดิตปัจจุบัน</th>
-                                    <th class="table-th">Win Rate</th>
-                                    <th class="table-th text-center">จัดการเครดิต</th>
-                                </tr>
-                            </thead>
-                            <tbody id="user-table-body"></tbody>
-                        </table>
-                    </div>
-                </section>
-
-                <section id="tab-wit" class="tab-content fade-in">
-                    <div class="flex gap-2 mb-6">
-                        <button onclick="switchWitSubTab('pending')" id="sub-pending-btn" class="px-6 py-2 rounded-full text-xs font-bold transition-all bg-slate-700 text-white">รออนุมัติ</button>
-                        <button onclick="switchWitSubTab('all')" id="sub-all-btn" class="px-6 py-2 rounded-full text-xs font-bold transition-all text-slate-400 bg-white border border-slate-200">ทั้งหมด</button>
-                    </div>
-                    <div class="glass-card overflow-hidden">
-                        <table class="table-container">
-                            <thead>
-                                <tr>
-                                    <th class="table-th">ลูกค้า / เวลา</th>
-                                    <th class="table-th">ยอดถอน</th>
-                                    <th class="table-th text-center">ข้อมูลบัญชี</th>
-                                    <th class="table-th text-center">สถานะ / จัดการ</th>
-                                </tr>
-                            </thead>
-                            <tbody id="transaction-table-body"></tbody>
-                        </table>
-                    </div>
-                </section>
-
-                <section id="tab-setting" class="tab-content fade-in">
-                    <div class="max-w-xl">
-                        <div class="glass-card p-8">
-                            <h4 class="font-bold text-slate-800 mb-6">ตั้งค่าข้อมูลซัพพอร์ต</h4>
-                            <div class="space-y-4">
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">ลิงก์ติดต่อ (เช่น LINE)</label>
-                                    <input type="text" id="config-support-url" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-slate-400 text-sm">
-                                </div>
-                                <button onclick="saveSystemSettings()" class="w-full bg-slate-800 text-white font-bold py-3 rounded-xl hover:bg-slate-700 transition">บันทึกข้อมูล</button>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-            </div>
-        </main>
-    </div>
+                </div>
+            </section>
+        </div>
+    </main>
 
     <script>
-        // --- 1. SETUP FIREBASE ---
+        // ✅ 1. CONFIG & AUTH
         const firebaseConfig = { apiKey: "AIzaSyDaeVJ1mUxjm1gG4GMTfZyqJsjImiISzPI", projectId: "gaga-1eb83" };
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore(), auth = firebase.auth();
 
-        let users = [], transactions = [], currentTab = 'dash', witSubTab = 'pending';
-        document.getElementById('display-date').innerText = new Date().toLocaleDateString('th-TH');
-
-        // --- 2. AUTHENTICATION (ซ่อนหน้าล็อกอินในไฟล์เดียวกัน และเข้าได้เลยไม่ต้องเช็คสิทธิ์ admin) ---
+        // ตรวจสอบล็อกอิน (แก้ไขให้เข้าได้ชัวร์ 100%)
         auth.onAuthStateChanged(user => {
             if (user) {
                 document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('main-layout').classList.remove('hidden');
+                document.getElementById('main-sidebar').classList.remove('hidden');
+                document.getElementById('main-content').classList.remove('hidden');
                 initRealtimeData();
-            } else { 
+            } else {
                 document.getElementById('login-screen').classList.remove('hidden');
-                document.getElementById('main-layout').classList.add('hidden');
+                document.getElementById('main-sidebar').classList.add('hidden');
+                document.getElementById('main-content').classList.add('hidden');
             }
         });
 
         async function handleLogin() {
             const e = document.getElementById('email').value, p = document.getElementById('password').value;
-            if (!e || !p) return Swal.fire('เตือน', 'กรุณากรอกอีเมลและรหัสผ่าน', 'warning');
+            if (!e || !p) return Swal.fire('เตือน', 'กรุณากรอกข้อมูลให้ครบ', 'warning');
             try { 
                 await auth.signInWithEmailAndPassword(e, p); 
-            } catch (err) { 
-                Swal.fire('ล้มเหลว', 'อีเมลหรือรหัสผ่านไม่ถูกต้อง', 'error'); 
+            } catch(err) { 
+                Swal.fire('Login Failed', 'อีเมลหรือรหัสผ่านผิดพลาด', 'error'); 
             }
         }
 
-        // --- 3. DATA LOAD ---
+        // ✅ 2. DATA LOADERS
+        let users = [], transactions = [], currentTab = 'dash', witSubTab = 'pending';
+
         function initRealtimeData() {
-            db.collection('users').onSnapshot(snap => {
-                users = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                updateStats(); if(currentTab === 'users') renderUserTable();
-            });
-            db.collection('transactions').onSnapshot(snap => {
-                transactions = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (b.time || 0) - (a.time || 0));
+            db.collection('users').onSnapshot(snap => { 
+                users = snap.docs.map(d => ({ id: d.id, ...d.data() })); 
                 updateStats(); 
-                if(currentTab === 'wit') renderTransactionTable(); 
-                if(currentTab === 'dash') renderDashboard();
+                if(currentTab==='users') renderUserTable(); 
+            });
+            db.collection('transactions').onSnapshot(snap => { 
+                transactions = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (b.time || 0) - (a.time || 0)); 
+                updateStats(); 
+                if(currentTab==='wit') renderTransactionTable(); 
             });
             db.collection('settings').doc('contact').get().then(doc => { if(doc.exists) document.getElementById('config-support-url').value = doc.data().url || ''; });
         }
@@ -260,157 +207,143 @@
             document.getElementById('stat-total-bal').innerText = users.reduce((s, u) => s + (u.balance || 0), 0).toLocaleString();
             const p = transactions.filter(t => t.status === 'pending').length;
             document.getElementById('stat-pending-wit').innerText = p;
-            const badge = document.getElementById('badge-wit-count');
-            if(p > 0) { badge.innerText = p; badge.classList.remove('hidden'); } else badge.classList.add('hidden');
+            const b = document.getElementById('badge-wit-count');
+            if(p > 0) { b.innerText = p; b.classList.remove('hidden'); } else { b.classList.add('hidden'); }
         }
 
-        // --- 4. RENDERERS ---
-        function renderDashboard() {
-            const pending = transactions.filter(t => t.status === 'pending').slice(0, 5);
-            let html = '';
-            pending.forEach(t => {
-                const info = (t.details || "").split(" | ");
-                html += `
-                <tr class="table-row">
-                    <td class="table-td text-sm font-bold text-slate-700">${t.name}</td>
-                    <td class="table-td text-xs text-slate-500">${info[1]||'-'}</td>
-                    <td class="table-td text-sm font-bold text-slate-800">฿${(t.amt||0).toLocaleString()}</td>
-                    <td class="table-td text-right space-x-2">
-                        <button onclick="approveTransaction('${t.id}', ${t.amt})" class="bg-slate-800 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold hover:bg-slate-700">อนุมัติ</button>
-                        <button onclick="rejectTransaction('${t.id}', '${t.uid}', ${t.amt})" class="bg-red-50 text-red-500 border border-red-100 px-3 py-1.5 rounded-lg text-[10px] font-bold hover:bg-red-500 hover:text-white transition">ยกเลิก</button>
-                    </td>
-                </tr>`;
-            });
-            document.getElementById('dash-pending-list').innerHTML = html || '<tr><td colspan="4" class="text-center py-10 text-slate-300 text-xs">ไม่มีรายการถอนใหม่</td></tr>';
-        }
-
+        // ✅ 3. RENDER FUNCTIONS
         function renderUserTable() {
-            const search = document.getElementById('user-search-input').value.toLowerCase();
-            const filtered = users.filter(u => (u.name||'').toLowerCase().includes(search) || (u.email||'').toLowerCase().includes(search));
+            const search = document.getElementById('user-search').value.toLowerCase();
+            const filtered = users.filter(u => (u.name||"").toLowerCase().includes(search) || (u.email||"").toLowerCase().includes(search));
             let html = '';
             filtered.forEach(u => {
                 html += `
                 <tr class="table-row">
                     <td class="table-td">
-                        <div class="font-bold text-slate-700 text-sm">${u.name || 'ไม่ระบุชื่อ'}</div>
-                        <div class="text-[10px] text-slate-400">${u.email || '-'}</div>
+                        <div class="font-bold text-slate-800">${u.name||'No Name'}</div>
+                        <div class="text-[10px] text-slate-400">${u.email}</div>
                     </td>
-                    <td class="table-td font-bold text-slate-800 text-base">฿${(u.balance||0).toLocaleString()}</td>
-                    <td class="table-td"><button onclick="editWinRate('${u.id}', ${u.winRate})" class="btn-action btn-gray">${u.winRate || 35}%</button></td>
+                    <td class="table-td font-black text-blue-600 text-lg">฿${(u.balance||0).toLocaleString()}</td>
+                    <td class="table-td text-center">
+                        <button onclick="editWinRate('${u.id}', ${u.winRate})" class="bg-slate-100 px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-200 transition">${u.winRate||35}%</button>
+                    </td>
                     <td class="table-td text-center">
                         <div class="flex justify-center gap-2">
-                            <button onclick="quickAdjust('${u.id}', '${u.name}', 'add')" class="btn-action btn-plus"><i class="fa-solid fa-plus"></i> เพิ่ม</button>
-                            <button onclick="quickAdjust('${u.id}', '${u.name}', 'minus')" class="btn-action btn-minus"><i class="fa-solid fa-minus"></i> หัก</button>
+                            <button onclick="adjustCredit('${u.id}', 'add')" class="w-10 h-10 rounded-xl bg-green-50 text-green-600 hover:bg-green-600 hover:text-white transition shadow-sm"><i class="fa-solid fa-plus"></i></button>
+                            <button onclick="adjustCredit('${u.id}', 'minus')" class="w-10 h-10 rounded-xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition shadow-sm"><i class="fa-solid fa-minus"></i></button>
                         </div>
                     </td>
                 </tr>`;
             });
-            document.getElementById('user-table-body').innerHTML = html || '<tr><td colspan="4" class="text-center py-10 text-slate-300 text-xs">ไม่พบข้อมูลลูกค้า</td></tr>';
+            document.getElementById('user-table-body').innerHTML = html;
         }
 
         function renderTransactionTable() {
-            let f = witSubTab === 'pending' ? transactions.filter(t => t.status === 'pending') : transactions;
+            let filtered = witSubTab === 'pending' ? transactions.filter(t => t.status === 'pending') : transactions;
             let html = '';
-            f.forEach(t => {
+            filtered.forEach(t => {
                 const info = (t.details || "").split(" | "); // [Bank, AccNo, AccName]
                 html += `
                 <tr class="table-row">
                     <td class="table-td">
-                        <div class="font-bold text-slate-700 text-sm">${t.name}</div>
-                        <div class="text-[10px] text-slate-400">${t.date||'-'}</div>
+                        <div class="font-bold text-slate-800">${t.name}</div>
+                        <div class="text-[10px] text-slate-400">${t.date}</div>
                     </td>
-                    <td class="table-td font-bold text-slate-800 text-base">฿${(t.amt||0).toLocaleString()}</td>
+                    <td class="table-td font-black text-xl text-slate-800">฿${(t.amt||0).toLocaleString()}</td>
                     <td class="table-td text-center">
-                        <button onclick="viewWithdrawDetails('${info[0]}', '${info[1]}', '${info[2]}')" class="btn-action btn-blue-light">
-                            <i class="fa-solid fa-eye"></i> ดูข้อมูลบัญชี
+                        <button onclick="viewBankInfo('${info[0]}', '${info[1]}', '${info[2]}')" class="bg-blue-50 text-blue-600 px-5 py-3 rounded-2xl text-xs font-bold hover:bg-blue-600 hover:text-white transition">
+                            <i class="fa-solid fa-id-card mr-2"></i> ข้อมูลบัญชี
                         </button>
                     </td>
                     <td class="table-td text-center">
                         ${t.status === 'pending' ? `
-                            <div class="flex justify-center gap-2">
-                                <button onclick="approveTransaction('${t.id}', ${t.amt})" class="bg-slate-800 text-white px-4 py-2 rounded-xl text-[10px] font-bold hover:bg-slate-700 transition">อนุมัติ</button>
-                                <button onclick="rejectTransaction('${t.id}', '${t.uid}', ${t.amt})" class="bg-red-50 text-red-500 border border-red-200 px-4 py-2 rounded-xl text-[10px] font-bold hover:bg-red-500 hover:text-white transition">ยกเลิก</button>
+                            <div class="flex justify-center gap-3">
+                                <button onclick="approveTransaction('${t.id}')" class="bg-blue-600 text-white px-6 py-3 rounded-2xl text-[10px] font-black shadow-lg shadow-blue-200 uppercase">อนุมัติโอน</button>
+                                <button onclick="cancelWithdraw('${t.id}', '${t.uid}', ${t.amt})" class="bg-red-50 text-red-500 border border-red-100 px-6 py-3 rounded-2xl text-[10px] font-black hover:bg-red-500 hover:text-white transition uppercase">ยกเลิก</button>
                             </div>
-                        ` : `<span class="text-[10px] font-bold uppercase px-3 py-1.5 rounded-lg ${t.status==='approved'?'bg-green-50 text-green-600 border border-green-200':'bg-red-50 text-red-500 border border-red-200'}">${t.status==='approved'?'อนุมัติแล้ว':'ยกเลิกแล้ว'}</span>`}
+                        ` : `
+                            <span class="px-4 py-2 rounded-xl text-[10px] font-black uppercase ${t.status==='approved'?'bg-green-50 text-green-600':'bg-red-50 text-red-400'}">${t.status}</span>
+                        `}
                     </td>
                 </tr>`;
             });
-            document.getElementById('transaction-table-body').innerHTML = html || '<tr><td colspan="4" class="text-center py-10 text-slate-300 text-xs">ไม่มีรายการธุรกรรม</td></tr>';
+            document.getElementById('transaction-table-body').innerHTML = html || '<tr><td colspan="4" class="text-center py-20 text-slate-300">ไม่มีรายการข้อมูล</td></tr>';
         }
 
-        // --- 5. ACTIONS & MODALS ---
-        // ปุ่มดูข้อมูลบัญชี & คัดลอก
-        function viewWithdrawDetails(bank, accNo, accName) {
+        // ✅ 4. FUNCTIONALITIES
+        function viewBankInfo(bank, accNo, accName) {
             Swal.fire({
-                title: 'ข้อมูลบัญชีสำหรับโอน',
+                title: 'ข้อมูลบัญชีถอนเงิน',
                 html: `
-                    <div class="text-left mt-4 space-y-3">
-                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                            <span class="text-[10px] text-slate-400 block font-bold uppercase mb-1">ธนาคาร</span>
-                            <strong class="text-slate-700 text-sm">${bank || '-'}</strong>
-                        </div>
-                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                            <span class="text-[10px] text-slate-400 block font-bold uppercase mb-1">ชื่อบัญชี</span>
-                            <strong class="text-slate-700 text-sm">${accName || '-'}</strong>
-                        </div>
-                        <div class="bg-blue-50/50 p-4 rounded-xl border border-blue-100 flex justify-between items-center">
-                            <div>
-                                <span class="text-[10px] text-blue-400 block font-bold uppercase mb-1">เลขบัญชี</span>
-                                <strong class="text-blue-600 text-lg">${accNo || '-'}</strong>
-                            </div>
-                            <button onclick="navigator.clipboard.writeText('${accNo}'); Swal.fire({toast:true, position:'top-end', icon:'success', title:'คัดลอกสำเร็จ', showConfirmButton:false, timer:1500})" class="bg-white border border-blue-200 hover:bg-blue-600 hover:text-white hover:border-blue-600 text-blue-600 px-4 py-2 rounded-lg text-xs font-bold transition">คัดลอก</button>
-                        </div>
+                <div class="text-left space-y-4 mt-4">
+                    <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">ธนาคาร</label>
+                        <div class="text-slate-800 font-bold">${bank || '-'}</div>
                     </div>
-                `,
-                showConfirmButton: false, showCloseButton: true
+                    <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">ชื่อบัญชี</label>
+                        <div class="text-slate-800 font-bold">${accName || '-'}</div>
+                    </div>
+                    <div class="p-4 bg-blue-50 rounded-2xl border border-blue-100 flex justify-between items-center">
+                        <div>
+                            <label class="text-[10px] font-bold text-blue-400 uppercase">เลขบัญชี</label>
+                            <div class="text-blue-600 font-black text-2xl mono tracking-tighter">${accNo || '-'}</div>
+                        </div>
+                        <button onclick="copyToClipboard('${accNo}')" class="bg-blue-600 text-white p-3 rounded-xl hover:bg-blue-700 transition"><i class="fa-solid fa-copy"></i></button>
+                    </div>
+                </div>`,
+                showConfirmButton: false,
+                showCloseButton: true
             });
         }
 
-        async function quickAdjust(uid, name, type) {
-            const isAdd = type === 'add';
-            const { value: amount } = await Swal.fire({
-                title: isAdd ? 'เพิ่มเครดิต' : 'หักเครดิต',
-                html: `สมาชิก: <b>${name}</b>`,
-                input: 'number',
-                inputPlaceholder: 'ระบุจำนวนเงิน...',
-                showCancelButton: true,
-                confirmButtonColor: isAdd ? '#16a34a' : '#dc2626',
-                confirmButtonText: isAdd ? 'ยืนยัน' : 'ยืนยัน',
-                cancelButtonText: 'ยกเลิก'
-            });
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text);
+            Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'คัดลอกเลขบัญชีแล้ว', showConfirmButton: false, timer: 1500 });
+        }
 
-            if (amount && Number(amount) > 0) {
-                const finalAmount = isAdd ? Number(amount) : -Number(amount);
-                try {
-                    await db.collection('users').doc(uid).update({ balance: firebase.firestore.FieldValue.increment(finalAmount) });
-                    Swal.fire({ icon: 'success', title: 'สำเร็จ', timer: 1500, showConfirmButton: false });
-                } catch(e) { Swal.fire('Error', 'ไม่สามารถปรับยอดได้', 'error'); }
+        async function adjustCredit(uid, type) {
+            const isAdd = type === 'add';
+            const { value: amt } = await Swal.fire({
+                title: isAdd ? 'เพิ่มเครดิต' : 'หักเครดิต',
+                input: 'number',
+                inputPlaceholder: 'ใส่จำนวนเงิน...',
+                showCancelButton: true,
+                confirmButtonColor: isAdd ? '#0061ff' : '#ef4444'
+            });
+            if (amt && Number(amt) > 0) {
+                const val = isAdd ? Number(amt) : -Number(amt);
+                await db.collection('users').doc(uid).update({ balance: firebase.firestore.FieldValue.increment(val) });
+                Swal.fire({ icon: 'success', title: 'ดำเนินการเรียบร้อย', timer: 1500, showConfirmButton: false });
             }
         }
 
         async function editWinRate(uid, current) {
-            const { value: rate } = await Swal.fire({ title: 'ปรับ Win Rate (%)', input: 'range', inputAttributes: { min: 0, max: 100, step: 1 }, inputValue: current || 35 });
-            if (rate) { await db.collection('users').doc(uid).update({ winRate: parseInt(rate) }); }
+            const { value: rate } = await Swal.fire({ title: 'ปรับ Win Rate (%)', input: 'range', inputAttributes: { min: 0, max: 100 }, inputValue: current || 35 });
+            if (rate) await db.collection('users').doc(uid).update({ winRate: parseInt(rate) });
         }
 
-        async function approveTransaction(tid, amt) {
-            const res = await Swal.fire({ title: 'ยืนยันโอนเงิน?', text: `ยอดเงิน ฿${amt.toLocaleString()}`, icon: 'question', showCancelButton: true });
-            if(res.isConfirmed) await db.collection('transactions').doc(tid).update({ status: 'approved' });
+        async function approveTransaction(tid) {
+            const res = await Swal.fire({ title: 'ยืนยันการโอนเงิน?', text: 'กรุณาตรวจสอบยอดเงินก่อนยืนยัน', icon: 'question', showCancelButton: true });
+            if (res.isConfirmed) await db.collection('transactions').doc(tid).update({ status: 'approved' });
         }
 
-        // ปุ่มปฏิเสธ (ยกเลิกและคืนเงิน)
-        async function rejectTransaction(tid, uid, amt) {
-            const res = await Swal.fire({ 
-                title: 'ยกเลิกรายการถอน?', 
-                text: `ระบบจะทำการคืนเงิน ฿${amt.toLocaleString()} กลับเข้าเครดิตลูกค้าโดยอัตโนมัติ`, 
-                icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444' 
+        async function cancelWithdraw(tid, uid, amt) {
+            const res = await Swal.fire({
+                title: 'ยกเลิกรายการและคืนเงิน?',
+                text: `ระบบจะคืนเงิน ฿${amt.toLocaleString()} เข้าเครดิตลูกค้าทันที`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                confirmButtonText: 'ยืนยันยกเลิก'
             });
-            if(res.isConfirmed) {
-                // 1. เปลี่ยนสถานะบิลเป็น rejected
-                await db.collection('transactions').doc(tid).update({ status: 'rejected' });
-                // 2. คืนเงินเข้ากระเป๋าลูกค้า
-                await db.collection('users').doc(uid).update({ balance: firebase.firestore.FieldValue.increment(amt) });
-                Swal.fire({ icon: 'success', title: 'ยกเลิกและคืนเงินสำเร็จ!', timer: 1500, showConfirmButton: false });
+            if (res.isConfirmed) {
+                // อัปเดตสถานะบิล และ คืนเครดิตให้ลูกค้า
+                const batch = db.batch();
+                batch.update(db.collection('transactions').doc(tid), { status: 'rejected' });
+                batch.update(db.collection('users').doc(uid), { balance: firebase.firestore.FieldValue.increment(amt) });
+                await batch.commit();
+                Swal.fire({ icon: 'success', title: 'คืนเงินสำเร็จ', timer: 1500, showConfirmButton: false });
             }
         }
 
@@ -420,29 +353,29 @@
             Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ', timer: 1000, showConfirmButton: false });
         }
 
-        // --- 6. NAV ---
+        // ✅ 5. NAVIGATION
         function switchTab(id) {
             currentTab = id;
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             document.getElementById('tab-'+id).classList.add('active');
             document.getElementById('btn-'+id).classList.add('active');
-            
-            const titles = { dash: 'ภาพรวมระบบ', users: 'จัดการสมาชิก', wit: 'รายการธุรกรรม', setting: 'ตั้งค่าระบบ' };
-            const descs = { dash: 'สรุปข้อมูลการใช้งานประจำวัน', users: 'เพิ่ม/ลด เครดิต และปรับ Win rate', wit: 'อนุมัติ/ยกเลิก การถอนเงิน', setting: 'ตั้งค่าการติดต่อซัพพอร์ต' };
+            const titles = { dash: 'แผงควบคุมหลัก', users: 'จัดการสมาชิก', wit: 'รายการธุรกรรม', setting: 'ตั้งค่าระบบ' };
             document.getElementById('page-title').innerText = titles[id];
-            document.getElementById('page-desc').innerText = descs[id];
-            
             if(id === 'users') renderUserTable();
             if(id === 'wit') renderTransactionTable();
-            if(id === 'dash') renderDashboard();
         }
 
         function switchWitSubTab(tab) {
             witSubTab = tab;
-            const btnP = document.getElementById('sub-pending-btn'), btnA = document.getElementById('sub-all-btn');
-            if(tab === 'pending') { btnP.className = "px-6 py-2 rounded-full text-xs font-bold transition-all bg-slate-700 text-white"; btnA.className = "px-6 py-2 rounded-full text-xs font-bold transition-all text-slate-400 bg-white border border-slate-200"; } 
-            else { btnA.className = "px-6 py-2 rounded-full text-xs font-bold transition-all bg-slate-700 text-white"; btnP.className = "px-6 py-2 rounded-full text-xs font-bold transition-all text-slate-400 bg-white border border-slate-200"; }
+            const p = document.getElementById('sub-pending-btn'), a = document.getElementById('sub-all-btn');
+            if(tab === 'pending') {
+                p.className = "px-8 py-3 rounded-xl text-xs font-bold transition-all bg-blue-600 text-white shadow-lg shadow-blue-100";
+                a.className = "px-8 py-3 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-50";
+            } else {
+                a.className = "px-8 py-3 rounded-xl text-xs font-bold transition-all bg-blue-600 text-white shadow-lg shadow-blue-100";
+                p.className = "px-8 py-3 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-50";
+            }
             renderTransactionTable();
         }
 
