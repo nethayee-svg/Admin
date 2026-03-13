@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RSP SUPREME | Flat Admin CMS</title>
+    <title>RSP SUPREME | Flat Admin UI</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
@@ -16,35 +16,34 @@
 
     <style>
         :root { 
-            --primary: #1e293b; 
-            --bg-main: #f8fafc; 
-            --border: #e2e8f0;
+            --primary: #334155; 
+            --bg-main: #f1f5f9; 
+            --border-color: #e2e8f0;
         }
-        body { font-family: 'Prompt', sans-serif; background-color: var(--bg-main); color: #334155; overflow-x: hidden; }
+        body { font-family: 'Prompt', sans-serif; background-color: var(--bg-main); color: #1e293b; overflow-x: hidden; }
         
-        /* Flat UI Styles */
-        .flat-card { background: white; border-radius: 12px; border: 1px solid var(--border); }
-        .sidebar { background: white; border-right: 1px solid var(--border); }
-        
+        .sidebar { background: white; border-right: 1px solid var(--border-color); }
         .nav-link { 
             display: flex; align-items: center; gap: 12px; padding: 12px 20px; 
             margin: 4px 16px; border-radius: 8px; color: #64748b; 
             font-weight: 500; transition: 0.2s; cursor: pointer;
         }
-        .nav-link:hover { background: #f1f5f9; color: var(--primary); }
+        .nav-link:hover { background: #f8fafc; color: var(--primary); }
         .nav-link.active { background: var(--primary); color: white; font-weight: 600; }
         
+        .flat-card { background: white; border-radius: 12px; border: 1px solid var(--border-color); }
+        
         .table-container { width: 100%; border-collapse: collapse; }
-        .table-row { border-bottom: 1px solid var(--border); transition: 0.2s; }
+        .table-row { border-bottom: 1px solid var(--border-color); transition: 0.2s; }
         .table-row:hover { background-color: #f8fafc; }
         .table-td { padding: 16px 20px; }
-        .table-th { padding: 14px 20px; text-align: left; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700; background: #f1f5f9; border-bottom: 2px solid var(--border); }
+        .table-th { padding: 14px 20px; text-align: left; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700; background: #f8fafc; border-bottom: 2px solid var(--border-color); }
 
         .btn-flat { padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 600; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; border: none; }
         .btn-blue { background-color: #3b82f6; color: white; }
         .btn-green { background-color: #10b981; color: white; }
         .btn-red { background-color: #ef4444; color: white; }
-        .btn-gray { background-color: #f1f5f9; color: #475569; border: 1px solid var(--border); }
+        .btn-gray { background-color: #f1f5f9; color: #475569; border: 1px solid var(--border-color); }
 
         .tab-content { display: none; animation: fadeIn 0.3s ease-out; }
         .tab-content.active { display: block; }
@@ -57,53 +56,41 @@
 
     <div id="login-screen">
         <div class="flat-card w-full max-w-sm p-8">
-            <div class="text-center mb-6">
-                <div class="w-16 h-16 bg-slate-100 text-slate-600 rounded-xl flex items-center justify-center mx-auto mb-4 text-3xl"><i class="fa-solid fa-shield-halved"></i></div>
-                <h2 class="text-2xl font-bold text-slate-800">RSP Admin</h2>
-                <p class="text-xs text-slate-500 mt-1">ระบบจัดการเว็บไซต์ (Flat Design)</p>
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-slate-100 text-slate-600 rounded-lg flex items-center justify-center mx-auto mb-4 text-3xl"><i class="fa-solid fa-layer-group"></i></div>
+                <h2 class="text-2xl font-bold text-slate-800">RSP System</h2>
+                <p class="text-xs text-slate-500 mt-1">Flat Admin Panel</p>
             </div>
             <div class="space-y-4">
-                <input type="email" id="email" placeholder="อีเมลผู้ดูแล" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-slate-400">
+                <input type="email" id="email" placeholder="อีเมล" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-slate-400">
                 <input type="password" id="password" placeholder="รหัสผ่าน" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-slate-400">
-                <button onclick="handleLogin()" class="w-full bg-slate-800 text-white font-bold py-3 rounded-lg hover:bg-slate-700 transition">เข้าสู่ระบบ</button>
-                
-                <div class="pt-4 border-t border-slate-100 text-center">
-                    <p class="text-xs text-slate-400 mb-2">เข้าไม่ได้? สร้างบัญชีแอดมินใหม่ที่นี่</p>
-                    <button onclick="createAdminAccount()" class="w-full bg-white border border-slate-300 text-slate-600 font-bold py-2 rounded-lg text-xs hover:bg-slate-50 transition">
-                        <i class="fa-solid fa-user-plus mr-1"></i> สร้างบัญชี Admin ใหม่
-                    </button>
-                </div>
+                <button onclick="handleLogin()" class="w-full bg-slate-800 text-white font-bold py-3 rounded-lg hover:bg-slate-700 transition mt-2">เข้าสู่ระบบ</button>
             </div>
         </div>
     </div>
 
     <aside id="main-sidebar" class="sidebar fixed inset-y-0 left-0 z-50 w-64 transform -translate-x-full lg:translate-x-0 lg:static hidden flex flex-col">
         <div class="p-8 pb-4">
-            <h1 class="text-xl font-bold tracking-tight text-slate-800 flex items-center gap-2">
-                <i class="fa-solid fa-cube text-slate-400"></i> RSP <span class="font-normal text-slate-500">CMS</span>
-            </h1>
+            <h1 class="text-xl font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-layer-group text-slate-400"></i> RSP <span class="font-normal text-slate-400">FLAT</span></h1>
         </div>
         <nav class="mt-4 flex-1 space-y-1">
-            <div onclick="switchTab('dash')" class="nav-link active" id="btn-dash"><i class="fa-solid fa-chart-pie w-5"></i> ภาพรวม</div>
-            <div onclick="switchTab('users')" class="nav-link" id="btn-users"><i class="fa-solid fa-users w-5"></i> สมาชิก</div>
+            <div onclick="switchTab('dash')" class="nav-link active" id="btn-dash"><i class="fa-solid fa-chart-bar w-5"></i> ภาพรวมระบบ</div>
+            <div onclick="switchTab('users')" class="nav-link" id="btn-users"><i class="fa-solid fa-users w-5"></i> จัดการสมาชิก</div>
             <div onclick="switchTab('wit')" class="nav-link relative" id="btn-wit">
-                <i class="fa-solid fa-money-bill-transfer w-5"></i> ธุรกรรม
+                <i class="fa-solid fa-money-check-dollar w-5"></i> รายการธุรกรรม
                 <span id="badge-wit-count" class="absolute right-4 bg-red-500 text-white text-[10px] px-2 py-0.5 rounded hidden font-bold">0</span>
             </div>
-            <div onclick="switchTab('setting')" class="nav-link" id="btn-setting"><i class="fa-solid fa-gear w-5"></i> ตั้งค่า</div>
+            <div onclick="switchTab('setting')" class="nav-link" id="btn-setting"><i class="fa-solid fa-gear w-5"></i> ตั้งค่าระบบ</div>
         </nav>
         <div class="p-6">
-            <button onclick="logout()" class="w-full flex justify-center gap-2 bg-slate-100 text-slate-600 py-3 rounded-lg font-bold text-xs hover:bg-red-50 hover:text-red-600">
-                <i class="fa-solid fa-power-off"></i> ออกจากระบบ
-            </button>
+            <button onclick="logout()" class="w-full flex items-center justify-center gap-2 bg-slate-100 text-slate-600 hover:bg-red-50 hover:text-red-600 py-3 rounded-lg font-bold text-xs transition-colors"><i class="fa-solid fa-power-off"></i> ออกจากระบบ</button>
         </div>
     </aside>
 
     <main id="main-content" class="flex-1 overflow-y-auto h-screen p-6 lg:p-10 hidden">
         <header class="flex justify-between items-center mb-8">
-            <div>
-                <h2 id="page-title" class="text-2xl font-bold text-slate-800">ภาพรวมระบบ</h2>
-            </div>
+            <h2 id="page-title" class="text-2xl font-bold text-slate-800">ภาพรวมระบบ</h2>
+            <div id="display-date" class="text-xs font-bold text-slate-500 bg-white border px-4 py-2 rounded-lg">--/--/----</div>
         </header>
 
         <div class="max-w-7xl mx-auto space-y-6">
@@ -111,15 +98,15 @@
             <section id="tab-dash" class="tab-content active">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                     <div class="flat-card p-6 border-l-4 border-l-blue-500">
-                        <p class="text-slate-500 text-xs font-bold mb-1">สมาชิกทั้งหมด</p>
-                        <h3 class="text-3xl font-bold text-slate-800" id="stat-total-users">0</h3>
+                        <p class="text-slate-500 text-xs font-bold mb-2">สมาชิกทั้งหมด</p>
+                        <h3 class="text-3xl font-bold" id="stat-total-users">0</h3>
                     </div>
                     <div class="flat-card p-6 border-l-4 border-l-green-500">
-                        <p class="text-slate-500 text-xs font-bold mb-1">เครดิตรวมในระบบ</p>
-                        <h3 class="text-3xl font-bold text-slate-800">฿<span id="stat-total-bal">0.00</span></h3>
+                        <p class="text-slate-500 text-xs font-bold mb-2">เครดิตรวมในระบบ</p>
+                        <h3 class="text-3xl font-bold">฿<span id="stat-total-bal">0.00</span></h3>
                     </div>
                     <div class="flat-card p-6 border-l-4 border-l-red-500 bg-red-50">
-                        <p class="text-red-600 text-xs font-bold mb-1">รออนุมัติถอน</p>
+                        <p class="text-red-600 text-xs font-bold mb-2">รออนุมัติถอน</p>
                         <h3 class="text-3xl font-bold text-red-600" id="stat-pending-wit">0</h3>
                     </div>
                 </div>
@@ -127,10 +114,7 @@
 
             <section id="tab-users" class="tab-content">
                 <div class="flat-card p-4 mb-6">
-                    <div class="relative w-full md:w-96">
-                        <input type="text" id="user-search-input" oninput="renderUserTable()" placeholder="ค้นหาชื่อลูกค้า..." class="w-full pl-10 pr-4 py-3 rounded-lg bg-slate-50 border border-slate-200 text-sm focus:outline-none focus:border-slate-400">
-                        <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                    </div>
+                    <input type="text" id="user-search-input" oninput="renderUserTable()" placeholder="ค้นหาชื่อลูกค้า..." class="w-full md:w-96 p-3 rounded-lg bg-slate-50 border border-slate-200 text-sm focus:outline-none focus:border-slate-400">
                 </div>
                 <div class="flat-card overflow-hidden">
                     <table class="table-container">
@@ -150,16 +134,16 @@
             <section id="tab-wit" class="tab-content">
                 <div class="flex gap-2 mb-6">
                     <button onclick="switchWitSubTab('pending')" id="sub-pending-btn" class="px-6 py-2.5 rounded-lg text-sm font-bold bg-slate-800 text-white">รออนุมัติ</button>
-                    <button onclick="switchWitSubTab('all')" id="sub-all-btn" class="px-6 py-2.5 rounded-lg text-sm font-bold bg-white text-slate-600 border">ทั้งหมด</button>
+                    <button onclick="switchWitSubTab('all')" id="sub-all-btn" class="px-6 py-2.5 rounded-lg text-sm font-bold bg-white text-slate-500 border hover:bg-slate-50">ทั้งหมด</button>
                 </div>
                 <div class="flat-card overflow-hidden">
                     <table class="table-container">
                         <thead>
                             <tr>
                                 <th class="table-th">ชื่อลูกค้า</th>
-                                <th class="table-th">ยอดเงิน</th>
+                                <th class="table-th">ยอดถอน</th>
                                 <th class="table-th text-center">ข้อมูลบัญชี</th>
-                                <th class="table-th text-center">การจัดการ</th>
+                                <th class="table-th text-center">จัดการ</th>
                             </tr>
                         </thead>
                         <tbody id="transaction-table-body"></tbody>
@@ -168,9 +152,9 @@
             </section>
 
             <section id="tab-setting" class="tab-content">
-                <div class="max-w-xl flat-card p-6">
+                <div class="max-w-xl flat-card p-6 border-t-4 border-t-slate-800">
                     <h4 class="font-bold text-slate-800 mb-4">ลิงก์ติดต่อซัพพอร์ต</h4>
-                    <input type="text" id="config-support-url" placeholder="เช่น LINE URL" class="w-full p-3 rounded-lg bg-slate-50 border border-slate-200 mb-4 text-sm focus:outline-none">
+                    <input type="text" id="config-support-url" placeholder="URL ติดต่อซัพพอร์ต" class="w-full p-3 rounded-lg bg-slate-50 border border-slate-200 mb-4 text-sm focus:outline-none">
                     <button onclick="saveSystemSettings()" class="btn-flat bg-slate-800 text-white w-full justify-center py-3">บันทึกข้อมูล</button>
                 </div>
             </section>
@@ -185,21 +169,16 @@
         const db = firebase.firestore(), auth = firebase.auth();
 
         let users = [], transactions = [], currentTab = 'dash', witSubTab = 'pending';
+        document.getElementById('display-date').innerText = new Date().toLocaleDateString('th-TH');
 
-        // --- 2. AUTHENTICATION (แก้ไขปัญหาเข้าไม่ได้) ---
+        // --- 2. AUTHENTICATION (แก้ไขให้เข้าได้ชัวร์ 100%) ---
         auth.onAuthStateChanged(user => {
             if (user) {
-                db.collection('users').doc(user.uid).get().then(doc => {
-                    if (doc.exists && doc.data().role === 'admin') { 
-                        document.getElementById('login-screen').classList.add('hidden');
-                        document.getElementById('main-sidebar').classList.remove('hidden');
-                        document.getElementById('main-content').classList.remove('hidden');
-                        initRealtimeData(); 
-                    } else { 
-                        Swal.fire('ปฏิเสธการเข้าถึง', 'บัญชีนี้ไม่ใช่ Admin (ถ้าต้องการเข้า ให้กดสร้างบัญชีใหม่)', 'error');
-                        auth.signOut(); 
-                    }
-                });
+                // **เอาเงื่อนไขการเช็ค role admin ออกแล้ว** แค่รหัสผ่านถูกก็เข้าได้เลยเหมือนตอนแรก
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('main-sidebar').classList.remove('hidden');
+                document.getElementById('main-content').classList.remove('hidden');
+                initRealtimeData(); 
             } else { 
                 document.getElementById('login-screen').classList.remove('hidden');
                 document.getElementById('main-sidebar').classList.add('hidden');
@@ -209,38 +188,11 @@
 
         async function handleLogin() {
             const e = document.getElementById('email').value, p = document.getElementById('password').value;
-            if (!e || !p) return Swal.fire('เตือน', 'กรุณากรอกข้อมูล', 'warning');
-            try { await auth.signInWithEmailAndPassword(e, p); } 
-            catch (err) { Swal.fire('ล้มเหลว', 'รหัสผ่านผิด หรือไม่มีบัญชีนี้', 'error'); }
-        }
-
-        // ฟังก์ชันพิเศษ: สร้างแอดมินใหม่เพื่อแก้ปัญหาเข้าไม่ได้
-        async function createAdminAccount() {
-            const { value: formValues } = await Swal.fire({
-                title: 'สร้างบัญชี Admin ใหม่',
-                html: `
-                    <input id="swal-email" type="email" class="swal2-input" placeholder="อีเมล">
-                    <input id="swal-pass" type="password" class="swal2-input" placeholder="รหัสผ่าน (6 ตัวขึ้นไป)">
-                `,
-                focusConfirm: false,
-                showCancelButton: true,
-                confirmButtonText: 'สร้างบัญชี',
-                preConfirm: () => {
-                    return { e: document.getElementById('swal-email').value, p: document.getElementById('swal-pass').value }
-                }
-            });
-
-            if (formValues && formValues.e && formValues.p) {
-                try {
-                    const res = await auth.createUserWithEmailAndPassword(formValues.e, formValues.p);
-                    // บังคับให้เป็น admin ในฐานข้อมูล
-                    await db.collection('users').doc(res.user.uid).set({
-                        email: formValues.e, name: 'Super Admin', role: 'admin', balance: 0, winRate: 35
-                    });
-                    Swal.fire('สำเร็จ!', 'สร้างบัญชี Admin เรียบร้อย กำลังเข้าสู่ระบบ...', 'success');
-                } catch(error) {
-                    Swal.fire('Error', error.message, 'error');
-                }
+            if (!e || !p) return Swal.fire('เตือน', 'กรุณากรอกอีเมลและรหัสผ่าน', 'warning');
+            try { 
+                await auth.signInWithEmailAndPassword(e, p); 
+            } catch (err) { 
+                Swal.fire('ล้มเหลว', 'อีเมลหรือรหัสผ่านไม่ถูกต้อง', 'error'); 
             }
         }
 
@@ -264,7 +216,6 @@
             document.getElementById('stat-total-bal').innerText = users.reduce((s, u) => s + (u.balance || 0), 0).toLocaleString();
             const p = transactions.filter(t => t.status === 'pending').length;
             document.getElementById('stat-pending-wit').innerText = p;
-            
             const badge = document.getElementById('badge-wit-count');
             if(p > 0) { badge.innerText = p; badge.classList.remove('hidden'); } else badge.classList.add('hidden');
         }
@@ -277,12 +228,12 @@
             filtered.forEach(u => {
                 html += `
                 <tr class="table-row">
-                    <td class="table-td font-bold text-slate-800">${u.name || 'ไม่มีชื่อ'} <br><span class="text-xs text-slate-400 font-normal">${u.email||'-'}</span></td>
+                    <td class="table-td font-bold">${u.name || 'ไม่ระบุชื่อ'}<br><span class="text-xs text-slate-400 font-normal">${u.email||'-'}</span></td>
                     <td class="table-td font-bold text-lg">฿${(u.balance||0).toLocaleString()}</td>
                     <td class="table-td"><button onclick="editWinRate('${u.id}', ${u.winRate})" class="btn-flat btn-gray">${u.winRate || 35}%</button></td>
                     <td class="table-td text-center">
-                        <button onclick="quickAdjust('${u.id}', '${u.name}', 'add')" class="btn-flat btn-green"><i class="fa-solid fa-plus"></i> เพิ่ม</button>
-                        <button onclick="quickAdjust('${u.id}', '${u.name}', 'minus')" class="btn-flat btn-red"><i class="fa-solid fa-minus"></i> หัก</button>
+                        <button onclick="quickAdjust('${u.id}', '${u.name}', 'add')" class="btn-flat btn-green"><i class="fa-solid fa-plus"></i></button>
+                        <button onclick="quickAdjust('${u.id}', '${u.name}', 'minus')" class="btn-flat btn-red"><i class="fa-solid fa-minus"></i></button>
                     </td>
                 </tr>`;
             });
@@ -297,41 +248,42 @@
                 html += `
                 <tr class="table-row">
                     <td class="table-td font-bold">${t.name}<br><span class="text-[10px] text-slate-400 font-normal">${t.date||'-'}</span></td>
-                    <td class="table-td font-bold text-lg">฿${(t.amt||0).toLocaleString()}</td>
+                    <td class="table-td font-bold text-lg text-slate-800">฿${(t.amt||0).toLocaleString()}</td>
                     <td class="table-td text-center">
-                        <button onclick="viewWithdrawDetails('${info[0]}', '${info[1]}', '${info[2]}')" class="btn-flat btn-blue"><i class="fa-solid fa-eye"></i> ดูข้อมูล & คัดลอกเลข</button>
+                        <button onclick="viewWithdrawDetails('${info[0]}', '${info[1]}', '${info[2]}')" class="btn-flat btn-blue"><i class="fa-solid fa-eye"></i> ดูข้อมูล</button>
                     </td>
                     <td class="table-td text-center">
                         ${t.status === 'pending' ? `
                             <button onclick="approveTransaction('${t.id}')" class="btn-flat btn-green">อนุมัติ</button>
-                            <button onclick="rejectTransaction('${t.id}', '${t.uid}', ${t.amt})" class="btn-flat btn-red">ยกเลิก (คืนเงิน)</button>
-                        ` : `<span class="text-xs font-bold px-3 py-1 rounded bg-slate-100 ${t.status==='approved'?'text-green-600':'text-red-600'}">${t.status==='approved'?'โอนสำเร็จ':'ยกเลิกแล้ว'}</span>`}
+                            <button onclick="rejectTransaction('${t.id}', '${t.uid}', ${t.amt})" class="btn-flat btn-red">ยกเลิก</button>
+                        ` : `<span class="text-xs font-bold px-3 py-1 rounded bg-slate-100 ${t.status==='approved'?'text-green-600':'text-red-600'}">${t.status==='approved'?'อนุมัติแล้ว':'ยกเลิกแล้ว'}</span>`}
                     </td>
                 </tr>`;
             });
-            document.getElementById('transaction-table-body').innerHTML = html || '<tr><td colspan="4" class="text-center py-10 text-slate-400">ไม่มีรายการ</td></tr>';
+            document.getElementById('transaction-table-body').innerHTML = html || '<tr><td colspan="4" class="text-center py-10 text-slate-400">ไม่มีรายการธุรกรรม</td></tr>';
         }
 
-        // --- 5. ACTIONS ---
+        // --- 5. ACTIONS & MODALS ---
+        // ดูข้อมูลและคัดลอกเลขบัญชี
         function viewWithdrawDetails(bank, accNo, accName) {
             Swal.fire({
-                title: 'ข้อมูลบัญชีลูกค้า',
+                title: 'ข้อมูลถอนเงิน',
                 html: `
                     <div class="text-left mt-4 space-y-3">
                         <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
-                            <span class="text-xs text-slate-500 block mb-1 font-bold">ธนาคาร</span>
+                            <span class="text-xs text-slate-500 block font-bold">ธนาคาร</span>
                             <strong class="text-slate-800">${bank || '-'}</strong>
                         </div>
                         <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
-                            <span class="text-xs text-slate-500 block mb-1 font-bold">ชื่อบัญชี</span>
+                            <span class="text-xs text-slate-500 block font-bold">ชื่อบัญชี</span>
                             <strong class="text-slate-800">${accName || '-'}</strong>
                         </div>
                         <div class="bg-blue-50 p-4 rounded-lg border border-blue-200 flex justify-between items-center">
                             <div>
-                                <span class="text-xs text-blue-500 block mb-1 font-bold">เลขบัญชี</span>
+                                <span class="text-xs text-blue-500 block font-bold">เลขบัญชี</span>
                                 <strong class="text-blue-900 text-lg">${accNo || '-'}</strong>
                             </div>
-                            <button onclick="navigator.clipboard.writeText('${accNo}'); Swal.fire({toast:true, position:'top-end', icon:'success', title:'คัดลอกแล้ว', showConfirmButton:false, timer:1500})" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-bold">คัดลอก</button>
+                            <button onclick="navigator.clipboard.writeText('${accNo}'); Swal.fire({toast:true, position:'top-end', icon:'success', title:'คัดลอกแล้ว', showConfirmButton:false, timer:1500})" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition">คัดลอก</button>
                         </div>
                     </div>
                 `,
@@ -350,7 +302,7 @@
         }
 
         async function editWinRate(uid, cur) {
-            const { value: r } = await Swal.fire({ title: 'Win Rate (%)', input: 'range', inputAttributes: { min: 0, max: 100 }, inputValue: cur||35 });
+            const { value: r } = await Swal.fire({ title: 'ปรับ Win Rate (%)', input: 'range', inputAttributes: { min: 0, max: 100 }, inputValue: cur||35 });
             if(r) await db.collection('users').doc(uid).update({ winRate: parseInt(r) });
         }
 
@@ -359,7 +311,7 @@
             if(res.isConfirmed) await db.collection('transactions').doc(tid).update({ status: 'approved' });
         }
 
-        // ฟังก์ชันยกเลิกและคืนเงินที่สั่งไว้
+        // ฟังก์ชันยกเลิกถอนและคืนเงิน
         async function rejectTransaction(tid, uid, amt) {
             const res = await Swal.fire({ 
                 title: 'ยกเลิกการถอนเงิน?', 
@@ -368,9 +320,8 @@
             });
             if(res.isConfirmed) {
                 await db.collection('transactions').doc(tid).update({ status: 'rejected' });
-                // คืนยอดเงิน
                 await db.collection('users').doc(uid).update({ balance: firebase.firestore.FieldValue.increment(amt) });
-                Swal.fire({ icon: 'success', title: 'ยกเลิกและคืนเงินสำเร็จ!', timer: 1500, showConfirmButton: false });
+                Swal.fire({ icon: 'success', title: 'คืนเงินสำเร็จ!', timer: 1500, showConfirmButton: false });
             }
         }
 
@@ -387,6 +338,7 @@
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             document.getElementById('tab-'+id).classList.add('active');
             document.getElementById('btn-'+id).classList.add('active');
+            
             const titles = { dash: 'ภาพรวมระบบ', users: 'จัดการสมาชิก', wit: 'รายการธุรกรรม', setting: 'ตั้งค่าระบบ' };
             document.getElementById('page-title').innerText = titles[id];
             if(id === 'users') renderUserTable();
@@ -396,8 +348,8 @@
         function switchWitSubTab(tab) {
             witSubTab = tab;
             const bp = document.getElementById('sub-pending-btn'), ba = document.getElementById('sub-all-btn');
-            if(tab === 'pending') { bp.className="px-6 py-2.5 rounded-lg text-sm font-bold bg-slate-800 text-white"; ba.className="px-6 py-2.5 rounded-lg text-sm font-bold bg-white text-slate-600 border"; }
-            else { ba.className="px-6 py-2.5 rounded-lg text-sm font-bold bg-slate-800 text-white"; bp.className="px-6 py-2.5 rounded-lg text-sm font-bold bg-white text-slate-600 border"; }
+            if(tab === 'pending') { bp.className="px-6 py-2.5 rounded-lg text-sm font-bold bg-slate-800 text-white"; ba.className="px-6 py-2.5 rounded-lg text-sm font-bold bg-white text-slate-500 border hover:bg-slate-50"; }
+            else { ba.className="px-6 py-2.5 rounded-lg text-sm font-bold bg-slate-800 text-white"; bp.className="px-6 py-2.5 rounded-lg text-sm font-bold bg-white text-slate-500 border hover:bg-slate-50"; }
             renderTransactionTable();
         }
 
